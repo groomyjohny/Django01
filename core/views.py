@@ -20,11 +20,26 @@ def allPersons(request):
         })
     return JsonResponse({'results': arr})
 
+def recordToJson(rec):
+    return {
+        'id': rec.id,
+        'imagePath': rec.imagePath,
+        'timestampBegin': rec.timestampBegin,
+        'timestampEnd': rec.timestampEnd,
+        'cpuTimeNs': rec.cpuTimeNs,
+    }
 def allRecords(request):
-    return JsonResponse()
+    if request.method == "GET":
+        qs = core.models.ProcessRecord.objects.all()
+        arr = [recordToJson(rec) for rec in qs]
+        return JsonResponse(arr, safe=False)
+    if request.method == "POST":
+        return JsonResponse()
 
 def singleRecord(request, id):
-    return JsonResponse()
+    ret = core.models.ProcessRecord.objects.filter(id=id)
+    if len(ret) == 1: return JsonResponse(recordToJson(ret[0]), safe=False)
+    else: return JsonResponse({}, status=404)
 
 def person(request, id):
     p = core.models.Person.objects.get(id=id)
@@ -33,4 +48,4 @@ def person(request, id):
         'name': p.name,
         'phone': p.phone,
     }
-    return django.http.JsonResponse(ret)
+    return django.http.JsonResponse({ret})
