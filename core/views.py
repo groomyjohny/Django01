@@ -2,7 +2,7 @@ import json
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-import core.models
+from core.models import *
 
 # Create your views here.
 def index(request):
@@ -18,13 +18,15 @@ def recordToJson(rec):
     }
 def allRecords(request):
     if request.method == "GET":
-        qs = core.models.ProcessRecord.objects.all()
+        qs = ProcessRecord.objects.all()
         arr = [recordToJson(rec) for rec in qs]
         return JsonResponse(arr, safe=False)
     if request.method == "POST":
         return JsonResponse()
 
 def singleRecord(request, id):
-    ret = core.models.ProcessRecord.objects.filter(id=id)
-    if len(ret) == 1: return JsonResponse(recordToJson(ret[0]), safe=False)
-    else: return JsonResponse({}, status=404)
+    try:
+        obj = ProcessRecord.objects.get(id=id)
+        return JsonResponse(recordToJson(obj), safe=False)
+    except ProcessRecord.DoesNotExist:
+        return JsonResponse({'error': 'Record with specified ID was not found'}, status=404)
