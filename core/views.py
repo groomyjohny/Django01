@@ -30,3 +30,6 @@ def singleRecord(request, id):
         return JsonResponse(recordToJson(obj), safe=False)
     except ProcessRecord.DoesNotExist:
         return JsonResponse({'error': 'Record with specified ID was not found'}, status=404)
+
+def filterRecords(request):
+    return JsonResponse({},safe=False)
