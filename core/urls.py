@@ -3,6 +3,6 @@ import core.views;
 
 urlpatterns = [
     path('', core.views.index),
-    path('persons/', core.views.allPersons),
-    path('persons/<int:id>/', core.views.person),
+    path('records/', core.views.allRecords),
+    path('records/<int:id>/', core.views.singleRecord),
 ]

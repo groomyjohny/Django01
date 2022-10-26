@@ -4,14 +4,6 @@ import core.models
 from core import models
 # Register your models here.
 
-@admin.register(core.models.Person)
-class Person(admin.ModelAdmin):
-    list_display = ('name', 'phone')
-    search_fields = ('name', )
-    def __str__(self):
-        return self.name
-
-
 @admin.register(core.models.ProcessRecord)
 class ProcessRecord(admin.ModelAdmin):
     list_display = ('imagePath', 'osPid', 'timestampBegin', 'timestampEnd', 'cpuTimeNs')
@@ -19,4 +11,4 @@ class ProcessRecord(admin.ModelAdmin):
 
     #def __str__(self):
     #Todo: add nice str to ProcessRecord
-    #    return [ self.imagePath, self.osPid, self.timesta
+    #    return [ self.imagePath, self.osPid, self.timestampBegin, self.timestampEnd ].join(' ')

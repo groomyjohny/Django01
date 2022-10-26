@@ -1,6 +1,6 @@
 import json
 
-import django.http
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 import core.models
 
@@ -18,7 +18,13 @@ def allPersons(request):
             'name': p.name,
             'phone': p.phone,
         })
-    return django.http.JsonResponse({'results': arr})
+    return JsonResponse({'results': arr})
+
+def allRecords(request):
+    return JsonResponse()
+
+def singleRecord(request, id):
+    return JsonResponse()
 
 def person(request, id):
     p = core.models.Person.objects.get(id=id)
