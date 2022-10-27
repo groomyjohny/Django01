@@ -18,7 +18,7 @@
         // Create the data table.
         var data = new google.visualization.DataTable();
         data.addColumn('date', 'Дата и время');
-        data.addColumn('number', 'Время (мс)');
+        data.addColumn('number', 'Время (нс)');
 		data.addRows(rows);
         /*data.addRows([
           [new Date(2022,9,27,1,12,34,534), 6],
@@ -107,7 +107,7 @@
 			clearInterval(intervalId);
 			drawChart(chartData);
 			
-		},100);		
+		},1000);		
 	  }
     </script>
   </head>
