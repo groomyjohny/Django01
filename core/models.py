@@ -2,6 +2,7 @@ from django.db import models
 import os
 # Create your models here.
 class ProcessRecord(models.Model):
+    imageName = models.CharField('Процесс', max_length=512)
     imagePath = models.CharField('Путь к файлу', max_length=512)
     osPid = models.BigIntegerField('PID')
     osParentPid = models.BigIntegerField('PID родителя', blank=True, null=True)
