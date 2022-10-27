@@ -40,7 +40,15 @@
   </head>
 
   <body>
-    <!--Div that will hold the pie chart-->
+    <div id="input-form-div">
+		<label for="procName">Имя процесса: </label><input type="text" id="procName" name="procName"><br>
+		<label for="dateBegin">Время начала: </label><input type="datetime-local" id="dateBegin" name="dateBegin"><br>
+		<label for="dateEnd">Время конца: </label><input type="datetime-local" id="dateEnd" name="dateEnd"><br>
+		<label for="samplingPoints">Количество точек: </label><input type="text" id="samplingPoints" name="samplingPoints"><br>
+		<input type="submit">
+		
+		
+	</div>
     <div id="chart_div"></div>
   </body>
 </html>
