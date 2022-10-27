@@ -3,7 +3,7 @@ import csv
 import json
 
 arr = []
-with open('process_cycles_very_light.csv') as csvfile:
+with open('process_cycles_2.csv') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         obj = {
