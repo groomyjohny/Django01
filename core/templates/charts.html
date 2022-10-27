@@ -68,10 +68,13 @@
 			imageNameExact: procName,
 			timestampRange: [],
 		}
+		
+		let chartData = [];
 		for (let i = datePoints.length-2; i >= 0; --i)
 		{			
 			requestBody.timestampRange = [ datePoints[i+1], datePoints[i] ];
 			let appendix = '?' + 'imageNameExact=' + procName + '&timestampRange=' + dateToPython(datePoints[i+1]) + ','+ dateToPython(datePoints[i]);
+			let processNs = 0;
 			fetch(requestPath+appendix, {
 				method: "GET", 
 				/*params: {
@@ -80,13 +83,20 @@
 				}*/
 				}).then(
 					async function(response){
-						console.log(await response.json());
+						json = await response.json();
 						
+						for (i in json)
+						{
+							processNs += json[i].cpuTimeNs;
+							//console.log(json[i]);
+						}						
 			});
 			
-			let obj = [ datePoints[i], '' ] //date and response
-			
+			let obj = [ datePoints[i], processNs ] //date and response
+			chartData.push(obj);
 		}
+		
+		drawChart(chartData);
 	  }
     </script>
   </head>
