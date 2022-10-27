@@ -43,7 +43,7 @@
 		return d.toISOString();
 	  }
 	 
-	  async function handleForm(e)
+	  async function handleForm(e) //TODO: fix everything. Blue duct tape on top of nytroglycerine is more stable than this (probably). Too much workarounds.
 	  {
 		let form = document.getElementById("input-form-2");
 		let data = new FormData(form);
@@ -70,11 +70,14 @@
 		}
 		
 		let chartData = [];
+		for (let i = 0; i < datePoints.length-2; ++i) chartData[i] = null;
+		
+		let counter = 0;
 		for (let i = datePoints.length-2; i >= 0; --i)
 		{			
 			requestBody.timestampRange = [ datePoints[i+1], datePoints[i] ];
 			let appendix = '?' + 'imageNameExact=' + procName + '&timestampRange=' + dateToPython(datePoints[i+1]) + ','+ dateToPython(datePoints[i]);
-			let processNs = 0;
+			
 			fetch(requestPath+appendix, {
 				method: "GET", 
 				/*params: {
@@ -84,19 +87,27 @@
 				}).then(
 					async function(response){
 						json = await response.json();
+						let processNs = 0;
 						
-						for (i in json)
+						for (o of json)
 						{
-							processNs += json[i].cpuTimeNs;
+							processNs += o.cpuTimeNs;
 							//console.log(json[i]);
-						}						
-			});
-			
-			let obj = [ datePoints[i], processNs ] //date and response
-			chartData.push(obj);
+						}
+						let obj = [ datePoints[i], processNs ] //date and response
+						chartData[datePoints.length-2-i] = obj;
+			});			
 		}
 		
-		drawChart(chartData);
+		let intervalId = setInterval(function(){
+			for (obj of chartData)
+			{
+				if (!obj) return;				
+			}
+			clearInterval(intervalId);
+			drawChart(chartData);
+			
+		},100);		
 	  }
     </script>
   </head>
