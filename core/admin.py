@@ -6,8 +6,8 @@ from core import models
 
 @admin.register(core.models.ProcessRecord)
 class ProcessRecord(admin.ModelAdmin):
-    list_display = ('imagePath', 'osPid', 'timestampBegin', 'timestampEnd', 'cpuTimeNs')
-    search_fields = ('imagePath', 'osPid', 'timestampBegin', 'timestampEnd')
+    list_display = ('imageName','imagePath', 'osPid', 'osParentPid', 'timestampBegin', 'timestampEnd', 'cpuTimeNs')
+    search_fields = ('imageName', 'imagePath', 'osPid', 'timestampBegin', 'timestampEnd')
 
     #def __str__(self):
     #Todo: add nice str to ProcessRecord
