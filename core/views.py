@@ -22,18 +22,17 @@ def recordToJson(rec):
         'cpuTimeNs': rec.cpuTimeNs,
     }
 
-def jsonToRecord(js):
-    rec = json.loads(js)
-    return {
-        'id': rec.id,
-        'imageName': rec.getImageName(),
-        'imagePath': rec.imagePath,
-        'osPid': rec.osPid,
-        'osParentPid': rec.osParentPid,
-        'timestampBegin': rec.timestampBegin,
-        'timestampEnd': rec.timestampEnd,
-        'cpuTimeNs': rec.cpuTimeNs,
-    }
+def objToRecord(rec):
+    #rec = json.loads(js)
+    return ProcessRecord(
+        imageName=rec['imageName'],
+        imagePath=rec['imagePath'],
+        osPid=rec['osPid'],
+        osParentPid=rec['osParentPid'],
+        timestampBegin=rec['timestampBegin'],
+        timestampEnd=rec['timestampEnd'],
+        cpuTimeNs=(int(rec['cycles'])*1000000000) // int(rec['clockRate'])
+    )
 
 def querySetToJson(qs):
     arr = [recordToJson(rec) for rec in qs]
@@ -55,7 +54,10 @@ def allRecordsInner(request):
         qs = ProcessRecord.objects.all()
         return JsonResponse(querySetToJson(qs), safe=False)
     if request.method == "POST":
-        #arr = json.loads()
+        arr = json.loads(request.body)
+        for item in arr:
+            m = objToRecord(item)
+            m.save()
         return JsonResponse() #TODO: add DB insertion
 
 def singleRecord(request, id):
