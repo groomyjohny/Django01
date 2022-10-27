@@ -37,8 +37,13 @@
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
+	  
+	  function dateToPython(d)
+	  {
+		return d.toISOString();
+	  }
 	 
-	  function handleForm(e)
+	  async function handleForm(e)
 	  {
 		let form = document.getElementById("input-form-2");
 		let data = new FormData(form);
@@ -55,9 +60,33 @@
 		{
 			datePoints.push(new Date(dateEnd-i*step));
 		}
-		datePoints.push(dateBegin);
+		datePoints.push(dateBegin); //this now has all points in reverse-date order (youngest first)
 		
-		
+		let responses = []
+		let requestPath = "/records/filter";
+		let requestBody = {
+			imageNameExact: procName,
+			timestampRange: [],
+		}
+		for (let i = datePoints.length-2; i >= 0; --i)
+		{			
+			requestBody.timestampRange = [ datePoints[i+1], datePoints[i] ];
+			let appendix = '?' + 'imageNameExact=' + procName + '&timestampRange=' + dateToPython(datePoints[i+1]) + ','+ dateToPython(datePoints[i]);
+			fetch(requestPath+appendix, {
+				method: "GET", 
+				/*params: {
+					'imageNameExact': procName,
+					'timestampRange': JSON.stringify(requestBody.timestampRange),
+				}*/
+				}).then(
+					async function(response){
+						console.log(await response.json());
+						
+			});
+			
+			let obj = [ datePoints[i], '' ] //date and response
+			
+		}
 	  }
     </script>
   </head>

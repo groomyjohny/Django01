@@ -10,6 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 def index(request):
     return render(request, 'index.html')
 
+def chartsView(request):
+    return render(request, 'charts.html')
+
 def recordToJson(rec):
     return {
         'id': rec.id,
