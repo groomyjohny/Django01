@@ -69,6 +69,7 @@ def singleRecord(request, id):
 
 def filterRecords(request):
     # TODO: add input validation
+    #TODO: add handling of multiple filters of same type (like imagePathContains + imagePathContains, etc). Note: make it accept a list of criteria
     qs = ProcessRecord.objects.all()
     if 'idRange' in request.GET:
         args = request.GET['idRange'].split(',')
@@ -80,5 +81,9 @@ def filterRecords(request):
         qs = qs.filter(imagePath__contains=request.GET['imagePathContains'])
     if 'imagePathExact' in request.GET:
         qs = qs.filter(imagePath=request.GET['imagePathExact'])
+    if 'imageNameContains' in request.GET:
+        qs = qs.filter(imageName__contains=request.GET['imageNameContains'])
+    if 'imageNameExact' in request.GET:
+        qs = qs.filter(imageName=request.GET['imageNameExact'])
 
     return JsonResponse(querySetToJson(qs), safe=False)
