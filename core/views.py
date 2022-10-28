@@ -14,32 +14,8 @@ def index(request):
 def chartsView(request):
     return render(request, 'charts.html')
 
-def recordToJson(rec):
-    return {
-        'id': rec.id,
-        'imageName': rec.getImageName(),
-        'imagePath': rec.imagePath,
-        'osPid': rec.osPid,
-        'osParentPid': rec.osParentPid,
-        'timestampBegin': rec.timestampBegin,
-        'timestampEnd': rec.timestampEnd,
-        'cpuTimeNs': rec.cpuTimeNs,
-    }
-
-def objToRecord(rec):
-    #rec = json.loads(js)
-    return ProcessRecord(
-        imageName=rec['imageName'],
-        imagePath=rec['imagePath'],
-        osPid=rec['osPid'],
-        osParentPid=rec['osParentPid'],
-        timestampBegin=rec['timestampBegin'],
-        timestampEnd=rec['timestampEnd'],
-        cpuTimeNs=(int(rec['cycles'])*1000000000) // int(rec['clockRate'])
-    )
-
 def querySetToJson(qs):
-    arr = [recordToJson(rec) for rec in qs]
+    arr = [rec.toDict() for rec in qs]
     return arr
 
 #view for records/
@@ -60,13 +36,13 @@ def allRecordsInner(request):
     if request.method == "POST":
         arr = json.loads(request.body)
         for item in arr:
-            m = objToRecord(item)
+            m = ProcessRecord.fromDict(item)
             m.save()
         return JsonResponse() #TODO: add DB insertion
 
 def singleRecord(request, id):
-    obj = get_object_or_404(ProcessRecord, id=id);
-    return JsonResponse(recordToJson(obj), safe=False)
+    rec = get_object_or_404(ProcessRecord, id=id);
+    return JsonResponse(rec.toDict(), safe=False)
 
 def filterRecords(request):
     # TODO: add input validation
