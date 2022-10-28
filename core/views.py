@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from core.models import *
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def index(request):
@@ -64,11 +65,8 @@ def allRecordsInner(request):
         return JsonResponse() #TODO: add DB insertion
 
 def singleRecord(request, id):
-    try:
-        obj = ProcessRecord.objects.get(id=id)
-        return JsonResponse(recordToJson(obj), safe=False)
-    except ProcessRecord.DoesNotExist:
-        return JsonResponse({'error': 'Record with specified ID was not found'}, status=404)
+    obj = get_object_or_404(ProcessRecord, id=id);
+    return JsonResponse(recordToJson(obj), safe=False)
 
 def filterRecords(request):
     # TODO: add input validation
