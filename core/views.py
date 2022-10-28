@@ -17,10 +17,6 @@ class IndexView(TemplateView):
 class ChartsView(TemplateView):
     template_name = 'charts.html'
 
-def querySetToJson(qs):
-    arr = [rec.toDict() for rec in qs]
-    return arr
-
 #view for records/
 #GET: get all available records
 #POST: expects an array of JSON records and inserts them to DB
