@@ -6,10 +6,11 @@ from django.shortcuts import render
 from core.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
 def chartsView(request):
     return render(request, 'charts.html')
