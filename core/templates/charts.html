@@ -45,62 +45,23 @@
 		let dateBegin = new Date(data.get("dateBegin"));
 		let dateEnd = new Date(data.get("dateEnd"));
 		let samplingPoints = parseInt(data.get("samplingPoints"));
-		
-		let datePoints = [];
-		let dt = dateEnd - dateBegin;
-		let step = dt/(samplingPoints+1);
-		for (let i = 0; i < samplingPoints; ++i)
-		{
-			datePoints.push(new Date(dateEnd-i*step));
-		}
-		datePoints.push(dateBegin); //this now has all points in reverse-date order (youngest first)
-		
-		let responses = []
-		let requestPath = "/records/filter";
-		let requestBody = {
-			imageNameExact: procName,
-			timestampRange: [],
-		}
-		
-		let chartData = [];
-		for (let i = 0; i < datePoints.length-2; ++i) chartData[i] = null;
-		
-		let counter = 0;
-		for (let i = datePoints.length-2; i >= 0; --i)
-		{			
-			requestBody.timestampRange = [ datePoints[i+1], datePoints[i] ];
-			let appendix = '?' + 'imageNameExact=' + procName + '&timestampRange=' + dateToPython(datePoints[i+1]) + ','+ dateToPython(datePoints[i]);
-			
-			fetch(requestPath+appendix, {
-				method: "GET", 
-				/*params: {
-					'imageNameExact': procName,
-					'timestampRange': JSON.stringify(requestBody.timestampRange),
-				}*/
-				}).then(
-					async function(response){
-						json = await response.json();
-						let processNs = 0;
-						
-						for (o of json)
-						{
-							processNs += o.cpuTimeNs;
-							//console.log(json[i]);
-						}
-						let obj = [ datePoints[i], processNs ] //date and response
-						chartData[datePoints.length-2-i] = obj;
-			});			
-		}
-		
-		let intervalId = setInterval(function(){
-			for (obj of chartData)
+
+		fetch('get_data', {
+			method: "POST",
+			body: JSON.stringify({
+				procName: procName,
+				dateRange: [dateToPython(dateBegin), dateToPython(dateEnd)],
+				samplingPoints: samplingPoints,
+			})
+		}).then(async (response) => 
 			{
-				if (!obj) return;				
+				let chartData = await response.json();
+				for (let i = 0; i < chartData.length; ++i)
+					chartData[i][0] = new Date(chartData[i][0]);
+				
+				drawChart(chartData);
 			}
-			clearInterval(intervalId);
-			drawChart(chartData);
-			
-		},1000);		
+		);
 	  }
     </script>
   </head>

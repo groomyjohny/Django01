@@ -8,4 +8,5 @@ urlpatterns = [
     path('records/filter', core.views.filterRecords),
 
     path('charts/', core.views.ChartsView.as_view()),
+    path('charts/get_data', core.views.chartDataView),
 ]

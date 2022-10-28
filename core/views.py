@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from core.serializers import *
 from rest_framework.parsers import JSONParser
+from datetime import *
 
 # Create your views here.
 class IndexView(TemplateView):
@@ -16,6 +17,32 @@ class IndexView(TemplateView):
 
 class ChartsView(TemplateView):
     template_name = 'charts.html'
+
+@csrf_exempt
+def chartDataView(request):
+    data = JSONParser().parse(request)
+    dateRange = [ datetime.strptime(i, "%Y-%m-%dT%H:%M:%S.%fZ") for i in data['dateRange'] ]
+    procName = data['procName']
+    samplingPoints = int(data['samplingPoints'])
+
+    dateDelta = dateRange[1] - dateRange[0]
+    dateStep = dateDelta/samplingPoints
+
+    ret = []
+    for i in range(samplingPoints):
+        rangeLow = dateRange[0]+dateStep*i
+        rangeHigh = rangeLow+dateStep
+        qs = ProcessRecord.objects.filter(
+            imageName=procName,
+            timestampBegin__gte=rangeLow,
+            timestampEnd__lte=rangeHigh,
+        )
+
+        totalNs = 0
+        for i in qs: totalNs += i.cpuTimeNs
+        ret.append([ rangeLow, totalNs ])
+
+    return JsonResponse(ret, safe=False)
 
 #view for records/
 #GET: get all available records
@@ -29,7 +56,7 @@ else:
         return allRecordsInner(request)
 
 def allRecordsInner(request):
-    if request.method == "GET":
+    if request.method == "GET": #TODO: implement a limit there
         qs = ProcessRecord.objects.all()
         s = ProcessRecordSerializer(qs, many=True)
         return JsonResponse(s.data, safe=False)
