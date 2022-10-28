@@ -8,7 +8,12 @@ class ProcessRecord(models.Model):
     osParentPid = models.BigIntegerField('PID родителя', blank=True, null=True)
     timestampBegin = models.DateTimeField('Время начала')
     timestampEnd = models.DateTimeField('Время конца')
-    cpuTimeNs = models.BigIntegerField("Процессорное время (нс)", null=True)
+    cpuCycles = models.BigIntegerField("Процессорные циклы", null=True)
+    cpuClockRate = models.BigIntegerField("Частота процессора", null=True)
+
+    @property
+    def cpuTimeNs(self):
+        return (self.cpuCycles ** 1000000000) // self.cpuClockRate
 
     def getImageName(self):
         fileName = os.path.basename(self.imagePath)

@@ -6,4 +6,4 @@ import core.models
 class ProcessRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = core.models.ProcessRecord
-        fields = ['id', 'imageName', 'imagePath', 'osPid', 'osParentPid', 'timestampBegin', 'timestampEnd', 'cpuTimeNs']
+        fields = ['id', 'imageName', 'imagePath', 'osPid', 'osParentPid', 'timestampBegin', 'timestampEnd', 'cpuCycles', 'cpuClockRate', 'cpuTimeNs']
