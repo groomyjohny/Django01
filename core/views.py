@@ -7,6 +7,7 @@ from core.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
+from core.serializers import *
 
 # Create your views here.
 class IndexView(TemplateView):
@@ -42,8 +43,9 @@ def allRecordsInner(request):
         return JsonResponse() #TODO: add DB insertion
 
 def singleRecord(request, id):
-    rec = get_object_or_404(ProcessRecord, id=id);
-    return JsonResponse(rec.toDict(), safe=False)
+    rec = get_object_or_404(ProcessRecord, id=id)
+    s = ProcessRecordSerializer(rec)
+    return JsonResponse(s.data, safe=False)
 
 def filterRecords(request):
     # TODO: add input validation
