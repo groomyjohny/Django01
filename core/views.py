@@ -62,11 +62,11 @@ def allRecordsInner(request):
         return JsonResponse(s.data, safe=False)
     if request.method == "POST":
         data = JSONParser().parse(request)
-        arr = json.loads(request.body)
-        for item in arr:
-            m = ProcessRecord.fromDict(item)
-            m.save()
-        return JsonResponse()
+        s = ProcessRecordSerializer(data=data)
+        if s.is_valid():
+            s.save()
+            return JsonResponse('', status=201, safe=False)
+        return JsonResponse(s.errors, status=400)
 
 def singleRecord(request, id):
     rec = get_object_or_404(ProcessRecord, id=id)
