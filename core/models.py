@@ -13,7 +13,10 @@ class ProcessRecord(models.Model):
 
     @property
     def cpuTimeNs(self):
-        return (self.cpuCycles ** 1000000000) // self.cpuClockRate
+        try:
+            return (self.cpuCycles * 1000000000) // self.cpuClockRate
+        except TypeError:
+            return 0
 
     def getImageName(self):
         fileName = os.path.basename(self.imagePath)

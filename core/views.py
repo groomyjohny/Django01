@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from core.serializers import *
+from rest_framework.parsers import JSONParser
 
 # Create your views here.
 class IndexView(TemplateView):
@@ -37,6 +38,7 @@ def allRecordsInner(request):
         s = ProcessRecordSerializer(qs, many=True)
         return JsonResponse(s.data, safe=False)
     if request.method == "POST":
+        data = JSONParser().parse(request)
         arr = json.loads(request.body)
         for item in arr:
             m = ProcessRecord.fromDict(item)
