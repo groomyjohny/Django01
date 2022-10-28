@@ -34,13 +34,14 @@ else:
 def allRecordsInner(request):
     if request.method == "GET":
         qs = ProcessRecord.objects.all()
-        return JsonResponse(querySetToJson(qs), safe=False)
+        s = ProcessRecordSerializer(qs, many=True)
+        return JsonResponse(s.data, safe=False)
     if request.method == "POST":
         arr = json.loads(request.body)
         for item in arr:
             m = ProcessRecord.fromDict(item)
             m.save()
-        return JsonResponse() #TODO: add DB insertion
+        return JsonResponse()
 
 def singleRecord(request, id):
     rec = get_object_or_404(ProcessRecord, id=id)
@@ -66,4 +67,5 @@ def filterRecords(request):
     if 'imageNameExact' in request.GET:
         qs = qs.filter(imageName=request.GET['imageNameExact'])
 
-    return JsonResponse(querySetToJson(qs), safe=False)
+    s = ProcessRecordSerializer(qs, many=True)
+    return JsonResponse(s.data, safe=False)
