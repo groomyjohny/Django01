@@ -7,5 +7,5 @@ urlpatterns = [
     path('records/<int:id>/', core.views.singleRecord),
     path('records/filter', core.views.filterRecords),
 
-    path('charts/', core.views.chartsView),
+    path('charts/', core.views.ChartsView.as_view()),
 ]

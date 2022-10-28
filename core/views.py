@@ -12,8 +12,8 @@ from django.views.generic import TemplateView
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-def chartsView(request):
-    return render(request, 'charts.html')
+class ChartsView(TemplateView):
+    template_name = 'charts.html'
 
 def querySetToJson(qs):
     arr = [rec.toDict() for rec in qs]
