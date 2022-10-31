@@ -20,7 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b@7j^dhj(icelfvq(pin2#mgq-t8_l5*^aesj4ikk+7zj(v+f@' #TODO: change it and secure storage
+SECRET_KEY = ''
+with open("key.txt", "r") as f:
+    SECRET_KEY = f.readline() #TODO: probably not the best method to do it...
+if len(SECRET_KEY) < 100:
+    print(f"Fatal error: incorrect secret key length. Got {len(SECRET_KEY)}, expected 100 or more")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
