@@ -156,3 +156,4 @@ cython_debug/
 *.txt
 json_server_response.html
 *.sqlite3
+.idea/dbnavigator.xml
